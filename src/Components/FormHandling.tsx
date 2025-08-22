@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { TextField,Button, CardContent, Typography, CardActions} from '@mui/material'
+import {Card} from "@mui/material";
 
 interface FormData {
     id: number
@@ -12,10 +14,21 @@ interface FormData {
 export default function FormHandling() {
 
     const [formData, setFormData] = useState<FormData>({id:Date.now() ,name:'', email:'', password:''});
-    const [data, setData]= useState<FormData[]>([])
+    const [data, setData]= useState<FormData[]>( [])
+
+    
+    useEffect(()=>{
+      const storedData= localStorage.getItem('userData')
+      if(storedData){
+        setData(JSON.parse(storedData))
+      }
+    },[])
 
 
-    //const [data, setData]= useState<any[]>([])
+    useEffect(()=>{
+       localStorage.setItem('userData', JSON.stringify(data))
+    },[data])
+
 
     const handleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
       setFormData({
@@ -27,56 +40,79 @@ export default function FormHandling() {
     const handleSubmit=(e: React.FormEvent)=>{
        e.preventDefault();
        setData([...data, formData])
-       localStorage.setItem('userData', JSON.stringify(data))
        setFormData({id: Date.now(), name:'', email:'', password:''})
        // console.log(formData)
-       let user: string | null= localStorage.getItem('userData')
-       console.log(user)
     }
-     
+    
+
+
     const handleDelete=(id: number)=>{
-        setData(data.filter((e)=>e.id!== id))
-       // localStorage.clear()
+      const item= data.filter((e)=>e.id!== id)
+      setData(item);
+      const updatedItem= localStorage.removeItem('item')
+      localStorage.setItem('userData', JSON.stringify(updatedItem))
     }
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <label> Name:
-                <input 
+
+                <TextField 
+                 label= "Name"
                  type="text" 
                  placeholder="Enter Your Name" 
                  name="name" 
                  value={formData.name}
                  onChange={handleChange} 
-                 /></label>
+                 margin="normal"
+                 />
                  
-                 <label> Email:
-                 <input 
+                <TextField
+                 label="Email"
                  type="email" 
                  placeholder="Enter Your Email" 
                  name="email" 
                  value={formData.email}
                  onChange={handleChange} 
-                 /></label>
+                 margin="normal"
+                 />
 
-                 <label> Password: 
-                 <input 
+                
+                <TextField
+                 label="Password"
                  type="Password" 
                  placeholder="Enter Your Password" 
                  name="password" 
                  value={formData.password}
                  onChange={handleChange} 
-                 /></label>
+                 margin="normal"
+                 />
 
-                <button>Submit</button>
+                <Button type='submit' variant="contained"
+                 style={{padding:"10px", margin:"18px"}}
+                >Submit</Button>
             </form>
 
-            <section>
+            <section style={{display:"flex", columnGap:"10px", margin:"10px"}}>
                  {data.map((e, i)=>(
-                  <ul key={i}>
-                      <li>Name: {e.name} <span>Email: {e.email}</span> <button onClick={()=>handleDelete(e.id)}>Del</button></li>
-                  </ul>
+                <div>
+                  <Card sx={{maxWidth: 300}} key={i}  style={{border:"1px solid black"}}>
+                     <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {e.name}
+                      </Typography>
+                      <Typography variant="body2" sx={{color: 'text.secondary'}}>
+                        {e.email}
+                      </Typography>
+                     </CardContent>
+                     <CardActions>
+                      <Button size="small" variant="contained" onClick={()=>handleDelete(e.id)}>Delete</Button>
+                     </CardActions>
+                  </Card>
+                  </div>
+                  // <ul key={i}>
+                  //     <li>Name: {e.name} <span>Email: {e.email}</span> <button onClick={()=>handleDelete(e.id)}>Del</button></li>
+                  // </ul>
                  ))}
             </section>
           

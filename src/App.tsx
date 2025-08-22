@@ -3,8 +3,8 @@
 
 
 //import ToDoList from "./Components/ToDoList"
-//import FormHandling from "./Components/FormHandling"
-import ApiFetch from "./Components/ApiFetch"
+import FormHandling from "./Components/FormHandling"
+//import ApiFetch from "./Components/ApiFetch"
 //import GetPosts from "./CRUD/GetPosts"
 
 export default function App(){
@@ -12,8 +12,8 @@ export default function App(){
   return(
     <div>
        {/* <ToDoList/> */}
-       {/* <FormHandling/> */}
-       <ApiFetch/>
+       <FormHandling/>
+       {/* <ApiFetch/> */}
        {/* <GetPosts/> */}
     </div>
   )
